@@ -1,10 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Alert, StyleSheet, Text, View, Image } from "react-native";
+import { Alert, StyleSheet, Text, View, Image} from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { lightBlue100 } from "react-native-paper/lib/typescript/styles/colors";
 const logo = require("./assets/logo.png");
-export default function SignUp(prop: any) {
+export default function SignUp(props: any) {
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [hidePassword, setHidePassword] = React.useState(true);
@@ -75,7 +75,11 @@ export default function SignUp(prop: any) {
       >
         Sign Up
       </Button>
-      <Text style={styles.loginInstead}>Already Have an Account?</Text>
+      
+      <Text onPress={()=>{
+         props.navigation.navigate("Login");
+      }} style={styles.loginInstead}>Already Have an Account?</Text>
+     
     </View>
   );
 }

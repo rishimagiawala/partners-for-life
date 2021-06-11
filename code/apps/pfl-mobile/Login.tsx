@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, View, Image } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { lightBlue100 } from "react-native-paper/lib/typescript/styles/colors";
 const logo = require("./assets/logo.png");
-export default function Login(prop: any) {
+export default function Login(props: any) {
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [hidePassword, setHidePassword] = React.useState(true);
@@ -80,6 +80,9 @@ export default function Login(prop: any) {
         style={styles.signUpButton}
         icon="account-plus-outline"
         mode="contained"
+        onPress={()=>{
+          props.navigation.navigate("SignUp");
+        }}
       >
         Sign Up
       </Button>
