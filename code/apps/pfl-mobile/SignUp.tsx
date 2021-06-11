@@ -1,8 +1,6 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Alert, StyleSheet, Text, View, Image} from "react-native";
-import { TextInput, Button } from "react-native-paper";
-import { lightBlue100 } from "react-native-paper/lib/typescript/styles/colors";
+import { StyleSheet, Text, View, Image, Alert } from "react-native";
+import { TextInput, Button, HelperText } from "react-native-paper";
 const logo = require("./assets/logo.png");
 export default function SignUp(props: any) {
   const [password, setPassword] = React.useState("");
@@ -10,6 +8,53 @@ export default function SignUp(props: any) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [name, setName] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [checkErrors, setCheckErrors] = React.useState(false);
+ 
+
+  var passwordErrors = true;
+  var emailErrors = true;
+
+  const emailHasErrors = () => {
+    if (checkErrors) {
+      if (!(email.includes("@") && email.includes("."))) {
+        emailErrors = true;
+        return (
+          <HelperText style={styles.helperText} type="error">
+            Email address is invalid!
+          </HelperText>
+        );
+        
+      }
+      else{
+        emailErrors = false
+      }
+    }
+  };
+
+  const passwordHasErrors = () => {
+    var passwordReq = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    if (checkErrors) {
+      if (!(password == confirmPassword)) {
+        passwordErrors = true
+        return (
+          <HelperText style={styles.helperText} type="error">
+            Passwords do not match
+          </HelperText>
+        );
+      }
+      else if(!(password.match(passwordReq))){
+        passwordErrors = true
+        return(
+        <HelperText style={styles.helperText} type="error">
+        Password must be have at least 6 characters, one numeric digit, one uppercase and one lowercase letter
+      </HelperText>
+        );
+      }
+      else{
+        passwordErrors = false
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -25,6 +70,7 @@ export default function SignUp(props: any) {
         value={name}
         onChangeText={(name) => setName(name)}
       />
+
       <TextInput
         theme={{ colors: { primary: "#118ab2" } }}
         selectionColor="#118ab2"
@@ -35,6 +81,7 @@ export default function SignUp(props: any) {
         value={email}
         onChangeText={(email) => setEmail(email)}
       />
+      {emailHasErrors()}
       <TextInput
         theme={{ colors: { primary: "#118ab2" } }}
         selectionColor="#118ab2"
@@ -65,9 +112,22 @@ export default function SignUp(props: any) {
           />
         }
       />
+      {passwordHasErrors()}
 
       <Button
         dark={true}
+        onPress={() => {
+          setCheckErrors(true);
+          if(!(passwordErrors || emailErrors)){
+            console.log("Everything looks good")
+            console.log('PasswordError: ' + passwordErrors + '/EmailErrors: ' + emailErrors)
+            Alert.alert('Thanks for signing up ' + name, 'Password: ' + password + '\nEmail: ' + email )
+          }
+          else{
+            console.log("Something is wrong now")
+            console.log('PasswordError: ' + passwordErrors + '/EmailErrors: ' + emailErrors)
+          }
+        }}
         color="#06d6a0"
         style={styles.signUpButton}
         icon="account-plus-outline"
@@ -75,11 +135,15 @@ export default function SignUp(props: any) {
       >
         Sign Up
       </Button>
-      
-      <Text onPress={()=>{
-         props.navigation.navigate("Login");
-      }} style={styles.loginInstead}>Already Have an Account?</Text>
-     
+
+      <Text
+        onPress={() => {
+          props.navigation.navigate("Login");
+        }}
+        style={styles.loginInstead}
+      >
+        Already Have an Account?
+      </Text>
     </View>
   );
 }
@@ -131,5 +195,10 @@ const styles = StyleSheet.create({
     color: "#118ab2",
     fontWeight: "bold",
     fontSize: 15,
+  },
+  helperText: {
+    position: "relative",
+    bottom: 10,
+    width: 350,
   },
 });
