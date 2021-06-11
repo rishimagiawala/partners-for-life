@@ -135,6 +135,8 @@ const styles = StyleSheet.create({
   },
   logo:{
     position:'relative',
-    bottom: 30
+    bottom: 30,
+    height: 250,
+    width: 250,
   }
 });
