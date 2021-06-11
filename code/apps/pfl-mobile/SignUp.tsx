@@ -4,18 +4,27 @@ import { Alert, StyleSheet, Text, View, Image } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { lightBlue100 } from "react-native-paper/lib/typescript/styles/colors";
 const logo = require("./assets/logo.png");
-export default function Login(prop: any) {
+export default function SignUp(prop: any) {
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [hidePassword, setHidePassword] = React.useState(true);
+  const [name, setName] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
 
-  ///////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={logo} />
-      <Text style={styles.titleText}>Login to your Account</Text>
+      <Text style={styles.titleText}>Create your Account</Text>
+      <TextInput
+        theme={{ colors: { primary: "#118ab2" } }}
+        selectionColor="#118ab2"
+        outlineColor="#118ab2"
+        underlineColor="#118ab2"
+        style={styles.nameInput}
+        label="Name"
+        value={name}
+        onChangeText={(name) => setName(name)}
+      />
       <TextInput
         theme={{ colors: { primary: "#118ab2" } }}
         selectionColor="#118ab2"
@@ -33,9 +42,20 @@ export default function Login(prop: any) {
         underlineColor="#118ab2"
         style={styles.passwordInput}
         label="Password"
-        secureTextEntry={hidePassword}
+        secureTextEntry={true}
         value={password}
         onChangeText={(password) => setPassword(password)}
+      />
+      <TextInput
+        theme={{ colors: { primary: "#118ab2" } }}
+        selectionColor="#118ab2"
+        outlineColor="#118ab2"
+        underlineColor="#118ab2"
+        style={styles.passwordInput}
+        label="Confirm Password"
+        secureTextEntry={hidePassword}
+        value={confirmPassword}
+        onChangeText={(confirmPassword) => setConfirmPassword(confirmPassword)}
         right={
           <TextInput.Icon
             name="eye"
@@ -45,35 +65,7 @@ export default function Login(prop: any) {
           />
         }
       />
-      <Button
-        color="#118ab2"
-        style={styles.loginButton}
-        icon="login"
-        mode="contained"
-        onPress={() => {
-          console.log("Email: " + email + " Password: " + password);
-          const Http = new XMLHttpRequest();
-          const url = "http://192.168.1.26:8000/";
-          Http.open("POST", url);
-          Http.setRequestHeader("Content-Type", "application/json");
-          Http.send(
-            JSON.stringify({
-              login: {
-                email: email,
-                password: password,
-              },
-            })
-          );
 
-          Http.onreadystatechange = (e) => {
-            console.log(Http.responseText);
-          };
-        }}
-      >
-        Log In
-      </Button>
-
-      <Text style={styles.forgotPassword}>Forgot Password?</Text>
       <Button
         dark={true}
         color="#06d6a0"
@@ -83,7 +75,7 @@ export default function Login(prop: any) {
       >
         Sign Up
       </Button>
-     
+      <Text style={styles.loginInstead}>Already Have an Account?</Text>
     </View>
   );
 }
@@ -106,35 +98,34 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     color: "#118ab2",
   },
-  loginButton: {
-    marginVertical: 15,
+  nameInput: {
+    height: 50,
     width: 350,
-    borderRadius: 20,
+    marginVertical: 15,
+    color: "#118ab2",
   },
   signUpButton: {
+    marginVertical: 15,
     marginTop: 30,
     width: 350,
     borderRadius: 20,
   },
-  
-  forgotPassword: {
-    color: "#118ab2",
-    fontWeight: "bold",
-    fontSize: 15,
-  },
-  logo:{
-    position:'relative',
+  logo: {
+    position: "relative",
     bottom: 30,
     height: 210,
     width: 210,
   },
-  titleText:{
-    
+  titleText: {
     color: "#073b4c",
     fontWeight: "bold",
     fontSize: 20,
-    textAlign: 'left',
+    textAlign: "left",
     width: 350,
-    
-  }
+  },
+  loginInstead: {
+    color: "#118ab2",
+    fontWeight: "bold",
+    fontSize: 15,
+  },
 });
