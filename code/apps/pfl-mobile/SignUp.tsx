@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, Alert } from "react-native";
 import { TextInput, Button, HelperText } from "react-native-paper";
+import { PFLUser } from "./data/pflUser";
 const logo = require("./assets/logo.png");
 export default function SignUp(props: any) {
   const [password, setPassword] = React.useState("");
@@ -8,14 +9,14 @@ export default function SignUp(props: any) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [name, setName] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [checkErrors, setCheckErrors] = React.useState(false);
- 
+  
 
   var passwordErrors = true;
   var emailErrors = true;
+  
 
   const emailHasErrors = () => {
-    if (checkErrors) {
+   
       if (!(email.includes("@") && email.includes("."))) {
         emailErrors = true;
         return (
@@ -23,37 +24,34 @@ export default function SignUp(props: any) {
             Email address is invalid!
           </HelperText>
         );
-        
+      } else {
+        emailErrors = false;
       }
-      else{
-        emailErrors = false
-      }
-    }
+    
   };
 
   const passwordHasErrors = () => {
     var passwordReq = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
-    if (checkErrors) {
+   
       if (!(password == confirmPassword)) {
-        passwordErrors = true
+        passwordErrors = true;
         return (
           <HelperText style={styles.helperText} type="error">
             Passwords do not match
           </HelperText>
         );
-      }
-      else if(!(password.match(passwordReq))){
-        passwordErrors = true
-        return(
-        <HelperText style={styles.helperText} type="error">
-        Password must be have at least 6 characters, one numeric digit, one uppercase and one lowercase letter
-      </HelperText>
+      } else if (!password.match(passwordReq)) {
+        passwordErrors = true;
+        return (
+          <HelperText style={styles.helperText} type="error">
+            Password must have at least 6 characters, one numeric digit, one
+            uppercase and one lowercase letter
+          </HelperText>
         );
+      } else {
+        passwordErrors = false;
       }
-      else{
-        passwordErrors = false
-      }
-    }
+    
   };
 
   return (
@@ -117,15 +115,32 @@ export default function SignUp(props: any) {
       <Button
         dark={true}
         onPress={() => {
-          setCheckErrors(true);
-          if(!(passwordErrors || emailErrors)){
-            console.log("Everything looks good")
-            console.log('PasswordError: ' + passwordErrors + '/EmailErrors: ' + emailErrors)
-            Alert.alert('Thanks for signing up ' + name, 'Password: ' + password + '\nEmail: ' + email )
-          }
-          else{
-            console.log("Something is wrong now")
-            console.log('PasswordError: ' + passwordErrors + '/EmailErrors: ' + emailErrors)
+          
+          if (!passwordErrors && !emailErrors) {
+            
+            const pflUser = new PFLUser(name, email, password)
+
+            const Http = new XMLHttpRequest();
+            const url = "http://192.168.1.26:3000/users";
+            Http.open("POST", url);
+            Http.setRequestHeader("Content-Type", "application/json");
+            Http.send(JSON.stringify(pflUser));
+          
+
+            Http.onreadystatechange = (e) => {
+              Alert.alert(
+                "Thanks for signing up " + name,
+                "ID: " + Http.responseText
+              );
+            };
+          } else {
+            console.log("Something is wrong now");
+            console.log(
+              "PasswordError: " +
+                passwordErrors +
+                "/EmailErrors: " +
+                emailErrors
+            );
           }
         }}
         color="#06d6a0"
